@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: tailor-my-cv
+    env: python
+    plan: free
+    buildCommand: ""
+    startCommand: python main.py
