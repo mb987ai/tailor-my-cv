@@ -1,0 +1,135 @@
+/* Base Reset and Fonts */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f9fafc;
+  color: #333;
+  line-height: 1.6;
+  padding: 1rem;
+}
+
+/* Container */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Headings */
+h1, h2, h3 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+/* Labels and Inputs */
+label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+textarea,
+input[type="file"],
+select {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 1rem;
+  background: #fefefe;
+}
+
+textarea {
+  height: 140px;
+  resize: vertical;
+}
+
+/* Button */
+button {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.9rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+/* Output Styling */
+.output-box {
+  background: #f4f4f4;
+  padding: 1.2rem;
+  border-radius: 8px;
+  white-space: pre-line;
+  font-family: 'Segoe UI', monospace;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid #007bff;
+}
+
+/* Privacy Section */
+.privacy {
+  margin-top: 2rem;
+  background: #eef7ff;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.privacy p {
+  margin-bottom: 0.5rem;
+}
+
+.secure-box {
+  background: #d4f4f4;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+}
+
+/* Back link */
+.back-link {
+  display: block;
+  margin-top: 2rem;
+  text-align: center;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.2rem;
+  }
+
+  textarea {
+    height: 120px;
+  }
+
+  button {
+    font-size: 1rem;
+  }
+}

@@ -1,75 +1,120 @@
-from flask import Flask, render_template, request, send_file
-import os
-from io import BytesIO
+from flask import Flask, render_template, request, send_file, session
 from groq import Groq
+import os
+import io
+from docx import Document
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+app.secret_key = "secret123"  # Needed for session
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+
+def extract_text_from_docx(file):
+    try:
+        document = Document(file)
+        return "\n".join([para.text for para in document.paragraphs])
+    except Exception:
+        return ""
+
+
+def save_to_docx(text):
+    doc = Document()
+    for para in text.split("\n"):
+        doc.add_paragraph(para)
+    doc_stream = io.BytesIO()
+    doc.save(doc_stream)
+    doc_stream.seek(0)
+    return doc_stream
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/generate", methods=["POST"])
 def generate():
-    resume_text = ""
-    job_text = ""
-
+    tone = request.form.get("tone", "human-like")
+    resume_text = request.form.get("resume_text", "").strip()
     resume_file = request.files.get("resume_file")
+
+    if not resume_text and resume_file:
+        filename = secure_filename(resume_file.filename)
+        if filename.endswith(".docx"):
+            resume_text = extract_text_from_docx(resume_file)
+        else:
+            try:
+                resume_text = resume_file.read().decode("utf-8")
+            except Exception:
+                return "❌ Could not read resume file. Please upload a .docx or valid .txt file."
+
+    job_text = request.form.get("job_text", "").strip()
     job_file = request.files.get("job_file")
-    resume_input = request.form.get("resume_textarea")
-    job_input = request.form.get("job_textarea")
 
-    if resume_file and resume_file.filename != "":
-        resume_text = resume_file.read().decode("utf-8", errors="ignore")
-    elif resume_input:
-        resume_text = resume_input
+    if not job_text and job_file:
+        filename = secure_filename(job_file.filename)
+        if filename.endswith(".docx"):
+            job_text = extract_text_from_docx(job_file)
+        else:
+            try:
+                job_text = job_file.read().decode("utf-8")
+            except Exception:
+                return "❌ Could not read job description file. Please upload a .docx or valid .txt file."
 
-    if job_file and job_file.filename != "":
-        job_text = job_file.read().decode("utf-8", errors="ignore")
-    elif job_input:
-        job_text = job_input
+    cover_text = request.form.get("cover_text", "").strip()
 
     if not resume_text or not job_text:
-        return render_template("result.html", error="❌ Please provide both resume and job description!")
+        return "❌ Please provide both resume and job description!"
 
     prompt = f"""
-You are a professional resume editor and cover letter writer.
-
-Please take the resume and job description provided below and do the following:
-1. Rewrite the resume to better align with the job description while keeping it human-like.
-2. Generate a cover letter that is tailored to the job description using a natural, warm tone.
+You're an expert career coach and resume writer. Please rewrite the following resume in a {tone} tone to best match the job description. Also include a tailored cover letter. If a cover letter intro is provided, include it.
 
 Resume:
 {resume_text}
 
 Job Description:
 {job_text}
-    """
+
+Cover Letter Intro (if any):
+{cover_text}
+"""
 
     try:
-        response = client.chat.completions.create(
+        response = groq_client.chat.completions.create(
             model="llama3-8b-8192",
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-        )
-        result_text = response.choices[0].message.content
+            messages=[{
+                "role":
+                "system",
+                "content":
+                "You are a professional resume and cover letter writer."
+            }, {
+                "role": "user",
+                "content": prompt
+            }])
+
+        result_text = response.choices[0].message.content.strip()
+
+        # Save to session for download
+        session['result_text'] = result_text
+
         return render_template("result.html", result=result_text)
+
     except Exception as e:
-        return render_template("result.html", error=f"❌ An error occurred: {e}")
+        return f"❌ An error occurred: {e}"
 
-@app.route("/download", methods=["POST"])
+
+@app.route("/download")
 def download():
-    content = request.form.get("download_content", "")
-    if not content:
-        return render_template("result.html", error="❌ No content provided for download.")
+    result_text = session.get('result_text', '')
+    if not result_text:
+        return "No result available to download."
 
-    buffer = BytesIO()
-    buffer.write(content.encode("utf-8"))
-    buffer.seek(0)
-    return send_file(buffer, as_attachment=True, download_name="Tailored_Resume_and_Cover_Letter.docx", mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    docx_file = save_to_docx(result_text)
+    return send_file(docx_file,
+                     as_attachment=True,
+                     download_name="Tailored_CV_and_Cover_Letter.docx")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
