@@ -1,1 +1,54 @@
-<!-- placeholder for result.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tailored Result</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f4f8fb;
+      color: #333;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .result {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      white-space: pre-wrap;
+    }
+    .button-wrapper {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    a.button {
+      background-color: #27ae60;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    a.button:hover {
+      background-color: #1e8449;
+    }
+  </style>
+</head>
+<body>
+  <h1>✅ Tailored Resume & Cover Letter</h1>
+  <div class="result">{{ result }}</div>
+  <div class="button-wrapper">
+    <a class="button" href="/download">⬇️ Download as Word</a>
+  </div>
+</body>
+</html>
+<form action="/download" method="get">
+  <button type="submit">⬇️ Download Tailored Resume + Cover Letter</button>
+</form>

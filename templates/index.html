@@ -1,1 +1,80 @@
-<!-- placeholder for index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TailorMyCV</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f7f9fc;
+      color: #333;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 { color: #2c3e50; }
+    label { font-weight: bold; }
+    textarea, select, input[type="file"] {
+      width: 100%; margin: 0.5rem 0 1rem;
+      padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc;
+    }
+    button {
+      background-color: #3498db; color: white;
+      padding: 0.7rem 1.5rem; border: none;
+      border-radius: 5px; font-size: 1rem; cursor: pointer;
+    }
+    button:hover { background-color: #2980b9; }
+    .privacy {
+      background-color: #ecf0f1;
+      border-left: 5px solid #3498db;
+      padding: 1rem; margin-top: 2rem;
+    }
+    .badge {
+      display: inline-block;
+      background: #d1f7c4;
+      color: #2d572c;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <h1>✨ TailorMyCV</h1>
+  <div class="badge">🧩 GDPR-friendly — No Tracking / No Storage</div>
+
+  <form method="POST" action="/generate" enctype="multipart/form-data">
+    <label for="tone">Select Tone:</label>
+    <select name="tone" id="tone">
+      <option value="human-like">Human-like</option>
+    </select>
+
+    <label for="resume_text">Paste Resume:</label>
+    <textarea name="resume_text" rows="6" placeholder="Paste your resume here..."></textarea>
+
+    <label for="resume_file">Or Upload Resume File:</label>
+    <input type="file" name="resume_file">
+
+    <label for="job_text">Paste Job Description:</label>
+    <textarea name="job_text" rows="6" placeholder="Paste job description here..."></textarea>
+
+    <label for="job_file">Or Upload Job Description File:</label>
+    <input type="file" name="job_file">
+
+    <label for="cover_text">Optional Cover Letter Text:</label>
+    <textarea name="cover_text" rows="4" placeholder="Paste your custom cover letter intro (optional)..."></textarea>
+
+    <br><button type="submit">✨ Tailor Now</button>
+  </form>
+
+  <div class="privacy">
+    <h3>🔒 Your Data is Safe</h3>
+    <p>This tool does not store or track your data. All processing happens securely and temporarily.</p>
+  </div>
+</body>
+</html>
